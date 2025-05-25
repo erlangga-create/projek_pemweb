@@ -3,8 +3,8 @@
 @push('styles')
 <style>
 :root {
-    --gold: #f5a900;
-    --charcoal: #000;
+    --gold: #f2c615;
+    --charcoal: #e9e9e9;
     --light: #e9e9e9;
     --border: #d4d4d4;
 }
@@ -205,7 +205,7 @@ header h1 {
     <div class="button-panel">
         @if(count($cart))
             {{-- BUAT PESANAN --}}
-            <form action="{{ route('cart.order') }}" method="POST">@csrf
+            <form action="{{ route('cart.confirm') }}" method="POST">@csrf
                 <button class="side-btn btn-black">Buat Pesanan</button>
             </form>
 

@@ -18,26 +18,26 @@
     </style>
   </head>
   <body class="bg-[#FFF5E4]">
-<header class="bg-[#f2c615] flex justify-between items-center px-8 py-4 border-b-2 border-black">
-  <h1 class="font-extrabold text-2xl">NyaperGO</h1>
-  <nav class="flex items-center space-x-6 text-black text-lg font-extrabold">
-    <i class="far fa-bell cursor-pointer"></i>
-    <i class="far fa-user-circle cursor-pointer"></i>
-    <span>{{ $user->name }}</span> <!-- Data dari database -->
-  </nav>
-</header>
+  <header class="bg-[#f2c615] flex justify-between items-center px-8 py-4 border-b-2 border-black">
+    <h1 class="font-extrabold text-2xl">NyaperGO</h1>
+    <nav class="flex items-center space-x-6 text-black text-lg font-extrabold">
+      <i class="far fa-bell cursor-pointer"></i>
+      <i class="far fa-user-circle cursor-pointer"></i>
+      <span>{{ $user->name }}</span> <!-- Data dari database -->
+    </nav>
+  </header>
 
     <main class="flex min-h-[calc(100vh-64px)]">
       <aside class="bg-[#f2c615] w-64 border-r-2 border-black flex flex-col justify-between py-10 px-6">
         <div>
           <h2 class="font-semibold text-xl mb-10">User Profile</h2>
           <ul class="space-y-8 text-black font-semibold text-lg">
-            <li class="flex items-center space-x-4 cursor-pointer"><i class="far fa-user-circle text-2xl"></i><a href="dashborad"></a>User Info</li>
-            <li class="flex items-center space-x-4 cursor-pointer"><i class="far fa-heart text-2xl"></i><a href="">favorites</a></li>
-            <li class="flex items-center space-x-4 cursor-pointer"><i class="fas fa-cog text-2xl"></i><span>Settings</span></li>
-            <li class="flex items-center space-x-4 cursor-pointer"><i class="far fa-bell text-2xl"></i><span>Notifications</span></li>
-            <li class="flex items-center space-x-4 cursor-pointer"><i class="fas fa-map-marker-alt text-2xl"></i><a href="lokasi">Lokasi</a></li>
-            <li class="flex items-center space-x-4 cursor-pointer"><i class="fas fa-home text-2xl"></i><a href="/">Home</a></li>
+            <li class="flex items-center space-x-4"><i class="far fa-user-circle text-2xl"></i><a href="dashboard">User Info</a></li>
+            <li class="flex items-center space-x-4"><i class="far fa-heart text-2xl"></i><a href="#">Favorites</a></li>
+            <li class="flex items-center space-x-4"><i class="fas fa-cog text-2xl"></i><span>Settings</span></li>
+            <li class="flex items-center space-x-4"><i class="far fa-bell text-2xl"></i><a href="orders">History Pesanan</a></li>
+            <li class="flex items-center space-x-4"><i class="fas fa-map-marker-alt text-2xl"></i><a href="lokasi">Lokasi</a></li>
+            <li class="flex items-center space-x-4"><i class="fas fa-home text-2xl"></i><a href="/">Home</a></li>
           </ul>
         </div>
         <div class="flex items-center space-x-4 cursor-pointer font-semibold text-lg">
