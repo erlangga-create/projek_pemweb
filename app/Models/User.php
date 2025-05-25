@@ -17,10 +17,13 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+   use HasFactory, Notifiable;
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
+        'nomor_telepon',
+        'tanggal_lahir',
     ];
 
     /**
