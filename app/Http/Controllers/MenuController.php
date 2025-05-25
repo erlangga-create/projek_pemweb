@@ -3,55 +3,51 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Lokasi;
 class MenuController extends Controller
 {
-    // Data produk statis sebagai method agar mudah dipanggil dan tidak bergantung instance
+    // Kumpulan data produk statis
     private function allProducts()
     {
         return collect([
-            (object)['id'=>1, 'name'=>'Nasi Goreng', 'price'=>15000, 'category'=>'makanan', 'description'=>'Nasi goreng enak'],
-            (object)['id'=>4, 'name'=>'Soto Ayam', 'price'=>18000, 'category'=>'makanan', 'description'=>'Soto ayam gurih'],
-            (object)['id'=>5, 'name'=>'Ayam Goreng', 'price'=>20000, 'category'=>'makanan', 'description'=>'Ayam goreng crispy'],
-            (object)['id'=>2, 'name'=>'Es Teh Manis', 'price'=>5000,  'category'=>'minuman', 'description'=>'Segar dingin'],
-            (object)['id'=>6, 'name'=>'Jus Jeruk',    'price'=>12000, 'category'=>'minuman', 'description'=>'Jus jeruk segar'],
-            (object)['id'=>7, 'name'=>'Kopi Hitam',   'price'=>15000, 'category'=>'minuman', 'description'=>'Kopi hitam panas'],
-            (object)['id'=>3, 'name'=>'Keripik Kentang','price'=>8000,  'category'=>'snack', 'description'=>'Gurih renyah'],
-            (object)['id'=>8, 'name'=>'Pisang Goreng',  'price'=>10000, 'category'=>'snack', 'description'=>'Pisang goreng hangat'],
+            (object)['id' => 1, 'name' => 'Nasi Goreng', 'price' => 15000, 'category' => 'makanan', 'description' => 'Nasi goreng enak'],
+            (object)['id' => 4, 'name' => 'Soto Ayam', 'price' => 18000, 'category' => 'makanan', 'description' => 'Soto ayam gurih'],
+            (object)['id' => 5, 'name' => 'Ayam Goreng', 'price' => 20000, 'category' => 'makanan', 'description' => 'Ayam goreng crispy'],
+            (object)['id' => 2, 'name' => 'Es Teh Manis', 'price' => 5000, 'category' => 'minuman', 'description' => 'Segar dingin'],
+            (object)['id' => 6, 'name' => 'Jus Jeruk', 'price' => 12000, 'category' => 'minuman', 'description' => 'Jus jeruk segar'],
+            (object)['id' => 7, 'name' => 'Kopi Hitam', 'price' => 15000, 'category' => 'minuman', 'description' => 'Kopi hitam panas'],
+            (object)['id' => 3, 'name' => 'Keripik Kentang', 'price' => 8000, 'category' => 'snack', 'description' => 'Gurih renyah'],
+            (object)['id' => 8, 'name' => 'Pisang Goreng', 'price' => 10000, 'category' => 'snack', 'description' => 'Pisang goreng hangat'],
         ]);
     }
 
-    // HALAMAN MENU DENGAN FILTER KATEGORI & PENCARIAN
+    // Halaman menu utama
     public function index(Request $request)
     {
-        $validCategories = ['all', 'makanan', 'minuman', 'snack'];
         $cat = $request->query('cat', 'all');
         $search = trim($request->query('cari', ''));
+        $validCategories = ['all', 'makanan', 'minuman', 'snack'];
 
-        // Validasi kategori
         if (!in_array($cat, $validCategories)) {
             $cat = 'all';
         }
 
         $products = $this->allProducts();
 
-        // Filter berdasarkan kategori jika bukan all
         if ($cat !== 'all') {
             $products = $products->where('category', $cat);
         }
 
-        // Filter berdasarkan pencarian nama produk
         if ($search !== '') {
-            $products = $products->filter(function($product) use ($search) {
+            $products = $products->filter(function ($product) use ($search) {
                 return stripos($product->name, $search) !== false;
             });
         }
 
-        // Ubah collection ke array supaya sesuai dengan view
         return view('menu', ['products' => $products->values()->all()]);
     }
 
-    // TAMBAH PRODUK KE KERANJANG (POST /cart/add/{id})
+    // Tambah produk ke keranjang
     public function addToCart($id)
     {
         $product = $this->allProducts()->firstWhere('id', (int)$id);
@@ -72,7 +68,7 @@ class MenuController extends Controller
         return back()->with('success', 'Produk berhasil ditambahkan ke keranjang.');
     }
 
-    // UPDATE QTY PRODUK DI KERANJANG (POST /cart/qty/{id}/{action})
+    // Update jumlah produk di keranjang
     public function updateQty($id, $action)
     {
         $cart = session('cart', []);
@@ -88,46 +84,60 @@ class MenuController extends Controller
                 unset($cart[$id]);
             }
         }
+
         session(['cart' => $cart]);
 
         return back();
     }
 
-    // TAMPILKAN HALAMAN KERANJANG (GET /cart)
+    // Tampilkan halaman keranjang
     public function showCart()
     {
         $cart = session('cart', []);
         return view('cart', compact('cart'));
     }
 
-    // KOSONGKAN KERANJANG (POST /cart/clear)
+    // Kosongkan isi keranjang
     public function clearCart()
     {
         session()->forget('cart');
         return redirect()->route('menu')->with('success', 'Keranjang berhasil dikosongkan.');
     }
 
-    // TAMPILKAN HALAMAN KONFIRMASI PESANAN (GET /cart/confirm)
+    // Halaman konfirmasi pesanan
     public function confirmCart()
     {
         $cart = session('cart', []);
+
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('warning', 'Keranjang kosong! Tambahkan produk terlebih dahulu.');
         }
+        
+        $defaultAlamat = Lokasi::where('user_id', auth()->id())
+                       ->where('is_default', true)
+                       ->first();
 
-        return view('confirm', compact('cart'));
+            if (!$defaultAlamat) {
+        return redirect()->route('lokasi')->with('warning', 'Silakan tambahkan dan set alamat default terlebih dahulu sebelum melanjutkan pemesanan.');
     }
 
-    // SIMPAN PESANAN (POST /order/save)
+        return view('confirm', compact('cart', 'defaultAlamat'));
+    }
+
+    // Simpan pesanan
     public function storeOrder(Request $request)
     {
+        $request->validate([
+            'alamat' => 'required|string',
+            'metode_pembayaran' => 'required|in:Tunai,QRIS,Transfer Bank',
+        ]);
+
         $cart = session('cart', []);
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('warning', 'Keranjang kosong! Tidak ada pesanan yang disimpan.');
         }
 
-        // Simpan ke database atau proses lainnya di sini
-        // Contoh: Order::create([...]);
+        // Simpan logika pemesanan di sini (jika ada database)
 
         session()->forget('cart');
 

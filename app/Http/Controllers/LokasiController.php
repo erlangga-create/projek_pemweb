@@ -1,10 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\lokasi;
+use App\Models\Lokasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 class LokasiController extends Controller
 {
      /**
@@ -13,11 +12,27 @@ class LokasiController extends Controller
     public function index()
     {
         //
+        $lokasi = Lokasi::where('user_id', auth()->id())->get();
+        return view('lokasi', ['lokasi' => $lokasi]);
+
     }
 
     /**
      * Show the form for creating a new resource.
      */
+
+     public function setDefault($id)
+{
+    $userId = auth()->id();
+
+    // Reset all alamat to not default
+    Lokasi::where('user_id', $userId)->update(['is_default' => false]);
+
+    // Set selected alamat as default
+    Lokasi::where('id', $id)->where('user_id', $userId)->update(['is_default' => true]);
+
+    return redirect()->back()->with('success', 'Alamat default berhasil diperbarui.');
+}
     public function create()
     {
         //
@@ -32,7 +47,7 @@ class LokasiController extends Controller
             'alamat' => 'required|string|max:255',
         ]);
 
-        $lokasi=lokasi::create([
+        $lokasi=Lokasi::create([
             'user_id' => auth()->id(),
             'alamat' => $request->alamat,
         ]);
@@ -58,23 +73,35 @@ class LokasiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request)
+   public function update(Request $request, $id)
 {
-    $user = Auth::user();
-    $user->username = $request->username;
-    $user->tanggal_lahir = $request->tanggal_lahir;
-    $user->nomor_telepon = $request->nomor_telepon;
-    $user->save();
+    $request->validate([
+        'alamat' => 'required|string|max:255',
+    ]);
 
-    return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
+    $lokasi = Lokasi::findOrFail($id);
+
+    // Cek agar hanya pemilik alamat yang bisa update
+    if ($lokasi->user_id === auth()->id()) {
+        $lokasi->update([
+            'alamat' => $request->alamat,
+        ]);
+    }
+
+    return redirect()->route('lokasi')->with('success', 'Alamat berhasil diperbarui.');
 }
 
-public function destroy()
-{
-    $user = Auth::user();
-    Auth::logout();
-    $user->delete();
 
-    return redirect('/')->with('success', 'Akun berhasil dihapus.');
+public function destroy($id)
+{
+    $lokasi = Lokasi::findOrFail($id);
+
+    // Cek agar hanya pemilik alamat yang bisa hapus
+    if ($lokasi->user_id === auth()->id()) {
+        $lokasi->delete();
+    }
+
+    return redirect()->route('lokasi')->with('success', 'Alamat berhasil dihapus.');
 }
+
 }

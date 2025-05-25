@@ -5,7 +5,7 @@
 @push('styles')
 <style>
 :root {
-    --gold: #f5a900;
+    --gold: #f2c615;
     --charcoal: #000;
     --light: #e9e9e9;
 }
@@ -115,7 +115,18 @@ form {
     display: flex;
     align-items: center;
     justify-content: center;
+    
 }
+    .btn-orange {
+        background-color: black;
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-left: 10px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
 </style>
 @endpush
 
@@ -124,8 +135,8 @@ form {
 <div class="wrapper">
     <header>
         <h1>NyaperGO <i class="fa fa-user"></i></h1>
-        <a href="/home" >home</a>
-        <a href="#" class="cart-btn">
+        <a href="{{ route('home') }}" class="btn-orange">Home</a>
+        <a href="{{ route('cart.index') }}" class="cart-btn">
             Lihat Keranjang ({{ count(session('cart', [])) }})
         </a>
     </header>
@@ -134,7 +145,7 @@ form {
         <div style="font-weight:700; margin-bottom:10px;">Menu Makanan</div>
 
         {{-- FORM CARI MAKANAN --}}
-        <form method="GET" action="#" style="margin-bottom: 14px; display: flex; gap: 8px;">
+        <form method="GET" action="{{ route('menu') }}" style="margin-bottom: 14px; display: flex; gap: 8px;">
             <input type="text" name="cari" placeholder="Cari makanan..." value="{{ request('cari') }}"
                 style="flex: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
             <input type="hidden" name="cat" value="{{ request('cat', 'all') }}">
@@ -161,7 +172,7 @@ form {
                         <div style="font-size:12px;">Rp {{ number_format($p->price, 0, ',', '.') }}</div>
                         <small>{{ $p->description ?? 'Deskripsi Makanan' }}</small>
                     </div>
-                    <form action="#" method="POST">
+                    <form action="{{ route('cart.add', $p->id) }}" method="POST">
                         @csrf
                         <button class="add-btn" title="Tambah ke Keranjang">+</button>
                     </form>

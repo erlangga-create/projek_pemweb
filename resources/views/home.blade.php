@@ -17,7 +17,7 @@
     <div class="flex justify-between items-center max-w-8xl mx-auto px-3 py-3 relative z-10">
       <div class="text-2xl font-extrabold text-black">NyaperGO</div>
       <nav class="ml-auto relative">
-        <div class="absolute -left-14 -right-[100vw] -top-3 -bottom-3 bg-[#E5AC0E] rounded-l-[80px] -z-10"></div>
+        <div class="absolute -left-14 -right-[100vw] -top-3 -bottom-3 bg-[#f2c615] rounded-l-[80px] -z-10"></div>
         <ul class="flex items-center space-x-10 px-14 py-6">
           <li><a class="font-extrabold text-black text-lg leading-6 hover:underline" href="#">Home</a></li>
           <li><a class="font-extrabold text-black text-lg leading-6 hover:underline" href="{{ route('menu') }}">Menu</a></li>
@@ -42,25 +42,29 @@
   <main class="max-w-7xl mx-auto px-6">
     <section class="flex flex-col md:flex-row items-center justify-between mt-20 md:mt-32">
       <div class="md:w-1/2">
-        <h1 class="text-[#E5AC0E] font-extrabold text-4xl md:text-5xl leading-tight mb-4">
+        <h1 class="text-[#e5af0a] font-extrabold text-4xl md:text-5xl leading-tight mb-4">
           Your Favorite<br/>Bites, Served Fast<br/>&amp; Tasty
         </h1>
         <p class="text-black text-base md:text-lg max-w-md mb-8">
           From the grill to your doorstep — sizzling, crispy, and full of flavor. Just sit back, we've got dinner covered.
         </p>
       @auth
-        <a href="{{ route('menu') }}" class="bg-[#e5af0a] text-white px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors">
+        <a href="{{ route('menu') }}" 
+        class="bg-[#f2c615] text-white px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors">
         Order Now</a>
           <span class="group-hover:text-accent">{{ Auth::user()->name }}</span>
         </div>
       @else
-        <a href="{{ route('login') }}" class="bg-[#e5af0a] text-white px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors">
+        <a href="{{ route('login') }}"
+         class="bg-[#f2c615] text-white px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors">
         Order Now</a>
       @endauth
       </div>
       <div class="md:w-1/2 mt-12 md:mt-0 relative">
-        <div class="absolute -bottom-16 -right-16 w-[600px] h-[320px] bg-[#E5AC0E] rounded-[120px] z-0"></div>
-        <img alt="Cheeseburger with lettuce, tomato, pickles, cheese, glass of orange juice, wooden bowls with sauces and fried snacks on wooden board" class="relative z-10 max-w-full h-auto" height="320" src="https://storage.googleapis.com/a1aa/image/587bf10f-05e3-47db-c62f-f10bed0be8ac.jpg" width="600"/>
+        <div class="absolute -bottom-16 -right-16 w-[600px] h-[320px] bg-[#f2c615] rounded-[120px] z-0"></div>
+        <img alt="Cheeseburger with lettuce, tomato, pickles, cheese, glass of orange juice, wooden bowls with sauces and fried snacks on wooden board" 
+        class="relative z-10 max-w-full h-auto" 
+        height="320" src="{{ asset('asset/halaman2.png') }}" width="600"/>
       </div>
     </section>
   </main>
