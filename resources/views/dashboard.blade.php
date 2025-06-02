@@ -23,7 +23,7 @@
     <nav class="flex items-center space-x-6 text-black text-lg font-extrabold">
       <i class="far fa-bell cursor-pointer"></i>
       <i class="far fa-user-circle cursor-pointer"></i>
-      <span>{{ $user->name }}</span> <!-- Data dari database -->
+      <span>{{ $user->name }}</span>
     </nav>
   </header>
 
