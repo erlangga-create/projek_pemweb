@@ -72,8 +72,17 @@ header h1 {
 .thumb {
     width: 60px;
     height: 45px;
-    background: #ccc;
     border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    background: #f5f5f5;
+}
+
+.thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .name {
@@ -99,6 +108,7 @@ header h1 {
     justify-content: center;
     font-size: 14px;
     cursor: pointer;
+    transition: background 0.2s;
 }
 .qty-btn:hover {
     background: #222;
@@ -142,6 +152,7 @@ header h1 {
 .btn-white {
     background: #fff;
     color: #000;
+    border: 1px solid #ddd;
 }
 .btn-white:hover {
     background: #eee;
@@ -152,6 +163,13 @@ header h1 {
     font-weight: 700;
     margin-top: 14px;
     font-size: 15px;
+    padding-right: 8px;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 20px;
+    color: #666;
 }
 </style>
 @endpush
@@ -162,62 +180,99 @@ header h1 {
     {{-- HEADER --}}
     <header>
         <h1>NyaperGO <i class="fa fa-user"></i></h1>
-        <a href="{{ route('menu') }}" class="btn-black side-btn" style="width:auto; padding:6px 16px;">← Menu</a>
+        <a href="{{ route('menu') }}" class="btn-black side-btn" style="width:auto; padding:6px 16px;">← Kembali ke Menu</a>
     </header>
 
     {{-- KERANJANG --}}
     <div class="cart-box">
         <h3>Keranjang Pesanan</h3>
 
-        @forelse($cart as $row)
-        @php($p = $row['product'])
-        <div class="item">
-            <div class="thumb"></div>
+        @php
+            // Map nama produk ke nama file gambar
+            $imageMap = [
+                'Soto Ayam' => 'sotoayam.jpg',
+                'Ayam Goreng' => 'ayamgoreng.jpg',
+                'Es Teh Manis' => 'esteh.jpg',
+                'Jus Jeruk' => 'jusjeruk.jpg',
+                'Kopi Hitam' => 'kopihitam.jpg',
+                'Keripik Kentang' => 'keripikkentang.jpg',
+                'Pisang Goreng' => 'pisanggoreng.jpg',
+                'Nasi Goreng' => 'nasigoreng.jpg'
+            ];
+        @endphp
 
-            <div>
-                <div class="name">{{ $p->name }}</div>
-                <div class="qty-wrap">
-                    <form action="{{ route('cart.qty',[$p->id,'minus']) }}" method="POST">@csrf
-                        <button class="qty-btn">−</button>
-                    </form>
-                    <span>{{ $row['qty'] }}</span>
-                    <form action="{{ route('cart.qty',[$p->id,'plus']) }}" method="POST">@csrf
-                        <button class="qty-btn">+</button>
-                    </form>
+        @forelse($cart as $row)
+            @php
+                $p = $row['product'];
+                $filename = $imageMap[$p->name] ?? 'default.jpg';
+            @endphp
+
+            <div class="item">
+                <div class="thumb">
+                    @if(file_exists(public_path('images/' . $filename)))
+                        <img src="{{ asset('images/' . $filename) }}" alt="{{ $p->name }}">
+                    @else
+                        <div style="display:flex; align-items:center; justify-content:center; height:100%; color:#999; font-size:10px;">
+                            No Image
+                        </div>
+                    @endif
+                </div>
+
+                <div>
+                    <div class="name">{{ $p->name }}</div>
+                    <div class="qty-wrap">
+                        <form action="{{ route('cart.qty', [$p->id, 'minus']) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="qty-btn" title="Kurangi jumlah">−</button>
+                        </form>
+                        <span>{{ $row['qty'] }}</span>
+                        <form action="{{ route('cart.qty', [$p->id, 'plus']) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="qty-btn" title="Tambah jumlah">+</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="price-tag">
+                    Rp {{ number_format($p->price * $row['qty'], 0, ',', '.') }}
                 </div>
             </div>
-
-            <div class="price-tag">
-                Rp {{ number_format($p->price*$row['qty'],0,',','.') }}
-            </div>
-        </div>
         @empty
-            <p>Keranjang masih kosong.</p>
+            <div class="empty-cart">
+                <p>Keranjang belanja Anda masih kosong</p>
+                <a href="{{ route('menu') }}" class="btn-black side-btn" style="margin-top:15px; width:auto; display:inline-block; padding:8px 20px;">
+                    Lihat Menu
+                </a>
+            </div>
         @endforelse
 
         @if(count($cart))
-            @php($total = collect($cart)->sum(fn($r)=>$r['product']->price*$r['qty']))
-            <div class="total">Total: Rp {{ number_format($total,0,',','.') }}</div>
+            @php
+                $total = collect($cart)->sum(fn($r) => $r['product']->price * $r['qty']);
+            @endphp
+            <div class="total">Total: Rp {{ number_format($total, 0, ',', '.') }}</div>
         @endif
     </div>
 
     {{-- PANEL TOMBOL --}}
+    @if(count($cart))
     <div class="button-panel">
-        @if(count($cart))
-            {{-- BUAT PESANAN --}}
-            <form action="{{ route('cart.confirm') }}" method="POST">@csrf
-                <button class="side-btn btn-black">Buat Pesanan</button>
-            </form>
+        {{-- BUAT PESANAN --}}
+        <form action="{{ route('cart.confirm') }}" method="POST">
+            @csrf
+            <button type="submit" class="side-btn btn-black">Buat Pesanan</button>
+        </form>
 
-            {{-- EDIT --}}
-            <a href="{{ route('menu') }}" class="side-btn btn-white">Edit Pesanan</a>
+        {{-- EDIT PESANAN --}}
+        <a href="{{ route('menu') }}" class="side-btn btn-white">Tambah Item Lain</a>
 
-            {{-- CANCEL --}}
-            <form action="{{ route('cart.clear') }}" method="POST">@csrf
-                <button class="side-btn btn-white">Cancel Pesanan</button>
-            </form>
-        @endif
+        {{-- KOSONGKAN KERANJANG --}}
+        <form action="{{ route('cart.clear') }}" method="POST">
+            @csrf
+            <button type="submit" class="side-btn btn-white" onclick="return confirm('Yakin ingin mengosongkan keranjang?')">Kosongkan Keranjang</button>
+        </form>
     </div>
+    @endif
 
 </div>
 @endsection

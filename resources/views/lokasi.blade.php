@@ -141,8 +141,6 @@
       </section>
     </main>
     
-
-    <!-- JavaScript for Modal -->
     <script>
       function closeModal() {
         document.getElementById('modalTambahAlamat').classList.add('hidden');
@@ -161,7 +159,6 @@
         input.value = alamat;
         form.action = '/lokasi/' + id;
 
-        // Tambahkan _method=PUT jika belum ada
         if (!form.querySelector('input[name="_method"]')) {
           const method = document.createElement('input');
           method.type = 'hidden';
@@ -169,7 +166,7 @@
           method.value = 'PUT';
           form.appendChild(method);
         }
-
+        
         modal.classList.remove('hidden');
       }
     </script>

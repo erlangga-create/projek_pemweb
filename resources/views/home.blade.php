@@ -42,7 +42,7 @@
   <main class="max-w-7xl mx-auto px-6">
     <section class="flex flex-col md:flex-row items-center justify-between mt-20 md:mt-32">
       <div class="md:w-1/2">
-        <h1 class="text-[#e5af0a] font-extrabold text-4xl md:text-5xl leading-tight mb-4">
+        <h1 class="text-[#e5af0a] font-extrabold text-6xl md:text-6xl leading-tight mb-4">
           Your Favorite<br/>Bites, Served Fast<br/>&amp; Tasty
         </h1>
         <p class="text-black text-base md:text-lg max-w-md mb-8">
@@ -50,66 +50,25 @@
         </p>
       @auth
         <a href="{{ route('menu') }}" 
-        class="bg-[#f2c615] text-white px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors">
+        class="bg-[#f2c615] text-white text-lg px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors">
         Order Now</a>
           <span class="group-hover:text-accent">{{ Auth::user()->name }}</span>
         </div>
       @else
         <a href="{{ route('login') }}"
-         class="bg-[#f2c615] text-white px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors">
+         class="bg-[#f2c615] text-white text-lg px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors">
         Order Now</a>
       @endauth
       </div>
       <div class="md:w-1/2 mt-12 md:mt-0 relative">
-        <div class="absolute -bottom-16 -right-16 w-[600px] h-[320px] bg-[#f2c615] rounded-[120px] z-0"></div>
+        <div class="absolute -bottom-16 -right-25 w-[770px] h-[320px] bg-[#f2c615] rounded-l-[120px] z-0"></div>
         <img alt="Cheeseburger with lettuce, tomato, pickles, cheese, glass of orange juice, wooden bowls with sauces and fried snacks on wooden board" 
-        class="relative z-10 max-w-full h-auto" 
+        class="relative z-10 max-w-full h-auto ml-12" 
         height="320" src="{{ asset('asset/halaman2.png') }}" width="600"/>
       </div>
     </section>
   </main>
   <!-- Tambahkan Font Awesome untuk ikon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      @if(Auth::check())
-        <a href="/profile">Profile</a>
-    @else
-        <a href="{{ route('login') }}">Sign In</a>
-    @endif
-      // Toggle dropdown profile
-      const profileButton = document.getElementById('profile-button');
-      if (profileButton) {
-        profileButton.addEventListener('click', toggleDropdown);
-      }
-      
-      // Close dropdown when clicking outside
-      document.addEventListener('click', (e) => {
-        const dropdown = document.getElementById('profile-dropdown');
-        const profileBtn = document.getElementById('profile-button');
-        
-        if (dropdown && !dropdown.contains(e.target) && !(profileBtn && profileBtn.contains(e.target))) {
-          dropdown.classList.add('hidden');
-        }
-      });
-
-      // Order button click handler
-      const orderBtn = document.getElementById('order-btn');
-      if (orderBtn) {
-        orderBtn.addEventListener('click', (e) => {
-          @guest
-            e.preventDefault();
-            window.location.href = "{{ route('login') }}";
-          @endguest
-        });
-      }
-    });
-
-    function toggleDropdown() {
-      const dropdown = document.getElementById('profile-dropdown');
-      dropdown.classList.toggle('hidden');
-    }
-  </script>
 </body>
 </html>
